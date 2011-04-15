@@ -1,6 +1,8 @@
 
 class Car < GameObject
   def initialize(position, velocity, image)
+    @map = Game.instance.map
+
     @space = Rinda::RingFinger.primary
 
     @velocity = velocity
@@ -43,7 +45,7 @@ class Car < GameObject
   end
 
   def take_crossroad(new_x, new_y)
-    crossroad = Game.instance.map.crossroads.detect_within(new_x, new_y, @width, @height)
+    crossroad = @map.crossroads.detect_within(new_x, new_y, @width, @height)
 
     if crossroad && @crossroad != crossroad
       @space.take [ :crossroad, crossroad.to_s ]
@@ -53,7 +55,7 @@ class Car < GameObject
   end
 
   def hidden?
-    return @x < 0 || @x > Game.instance.map.width || @y < 0 || @y > Game.instance.map.height
+    return @x < 0 || @x > @map.width || @y < 0 || @y > @map.height
   end
 end
 
