@@ -2,9 +2,9 @@
 class GameObject
   attr_accessor :x, :y, :width, :height, :surface
 
-  def initialize(x, y, surface)
-    @x = x
-    @y = y
+  def initialize(position, surface)
+    @x = position[0]
+    @y = position[1]
     @surface = surface
     @width = surface.width
     @height = surface.height

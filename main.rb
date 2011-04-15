@@ -1,83 +1,67 @@
 
-require "drb/drb"
-require "rinda/ring"
-require "rinda/tuplespace"
-
-DRb.start_service
-
-SPACE = Rinda::RingFinger.primary
-
+require "space"
 require "crossroads"
 require "crossroad"
-
-CROSSROADS = Crossroads.new
-
-CROSSROADS.push Crossroad.new(108, 64, 35, 35)
-CROSSROADS.push Crossroad.new(236, 64, 35, 35)
-CROSSROADS.push Crossroad.new(366, 64, 35, 35)
-CROSSROADS.push Crossroad.new(496, 64, 35, 35)
-
-CROSSROADS.push Crossroad.new(108, 165, 35, 35)
-CROSSROADS.push Crossroad.new(236, 165, 35, 35)
-CROSSROADS.push Crossroad.new(366, 165, 35, 35)
-CROSSROADS.push Crossroad.new(496, 165, 35, 35)
-
-CROSSROADS.push Crossroad.new(108, 272, 35, 35)
-CROSSROADS.push Crossroad.new(236, 272, 35, 35)
-CROSSROADS.push Crossroad.new(366, 272, 35, 35)
-CROSSROADS.push Crossroad.new(496, 272, 35, 35)
-
-CROSSROADS.push Crossroad.new(108, 380, 35, 35)
-CROSSROADS.push Crossroad.new(236, 380, 35, 35)
-CROSSROADS.push Crossroad.new(366, 380, 35, 35)
-CROSSROADS.push Crossroad.new(496, 380, 35, 35)
-
-CROSSROADS.each{ |crossroad| SPACE.write [ :crossroad, crossroad.to_s ] }
-
 require "rubygems"
 require "rubygame"
 require "game"
 require "game_object"
-require "background"
+require "map"
 require "car"
 
-cars = [
+# add the crossroads
+
+prototype = Crossroad.new(0, 0, 35, 35) # all crossroads are of equal size
+
+map = Map.new
+
+map.crossroads.add prototype.clone(108, 64),  prototype.clone(236, 64),  prototype.clone(366, 64),  prototype.clone(496, 64),
+                   prototype.clone(108, 165), prototype.clone(236, 165), prototype.clone(366, 165), prototype.clone(496, 165),
+                   prototype.clone(108, 272), prototype.clone(236, 272), prototype.clone(366, 272), prototype.clone(496, 272),
+                   prototype.clone(108, 380), prototype.clone(236, 380), prototype.clone(366, 380), prototype.clone(496, 380)
+
+# car prototype values
+
+prototypes = [
   # driving from west to east
 
-  [ 640, 386, [ -1, 0 ], "images/car-east-west.png", 20, 10 ],
-  [ 640, 278, [ -1, 0 ], "images/car-east-west.png", 20, 10 ],
-  [ 640, 170, [ -1, 0 ], "images/car-east-west.png", 20, 10 ],
-  [ 640, 67, [ -1, 0 ], "images/car-east-west.png", 20, 10 ],
+  [ [ 640, 386 ], [ -1, 0 ], "images/car-east-west.png" ],
+  [ [ 640, 278 ], [ -1, 0 ], "images/car-east-west.png" ],
+  [ [ 640, 170 ], [ -1, 0 ], "images/car-east-west.png" ],
+  [ [ 640, 67 ], [ -1, 0 ], "images/car-east-west.png" ],
 
   # driving from south to north
 
-  [ 517, 480, [ 0, -1 ], "images/car-south-north.png", 10, 20 ],
-  [ 387, 480, [ 0, -1 ], "images/car-south-north.png", 10, 20 ],
-  [ 257, 480, [ 0, -1 ], "images/car-south-north.png", 10, 20 ],
-  [ 127, 480, [ 0, -1 ], "images/car-south-north.png", 10, 20 ],
+  [ [ 517, 480 ], [ 0, -1 ], "images/car-south-north.png" ],
+  [ [ 387, 480 ], [ 0, -1 ], "images/car-south-north.png" ],
+  [ [ 257, 480 ], [ 0, -1 ], "images/car-south-north.png" ],
+  [ [ 127, 480 ], [ 0, -1 ], "images/car-south-north.png" ],
  
   # driving from north to south
 
-  [ 503, 0, [ 0, 1 ], "images/car-north-south.png", 10, 20 ],
-  [ 372, 0, [ 0, 1 ], "images/car-north-south.png", 10, 20 ],
-  [ 242, 0, [ 0, 1 ], "images/car-north-south.png", 10, 20 ],
-  [ 112, 0, [ 0, 1 ], "images/car-north-south.png", 10, 20 ],
+  [ [ 503, 0 ], [ 0, 1 ], "images/car-north-south.png" ],
+  [ [ 372, 0 ], [ 0, 1 ], "images/car-north-south.png" ],
+  [ [ 242, 0 ], [ 0, 1 ], "images/car-north-south.png" ],
+  [ [ 112, 0 ], [ 0, 1 ], "images/car-north-south.png" ],
   
   # driving from west to east
 
-  [ 0, 401, [ 1, 0 ], "images/car-west-east.png", 20, 10 ],
-  [ 0, 293, [ 1, 0 ], "images/car-west-east.png", 20, 10 ],
-  [ 0, 185, [ 1, 0 ], "images/car-west-east.png", 20, 10 ],
-  [ 0, 82, [ 1, 0 ], "images/car-west-east.png", 20, 10 ],
+  [ [ 0, 401 ], [ 1, 0 ], "images/car-west-east.png" ],
+  [ [ 0, 293 ], [ 1, 0 ], "images/car-west-east.png" ],
+  [ [ 0, 185 ], [ 1, 0 ], "images/car-west-east.png" ],
+  [ [ 0, 82 ], [ 1, 0 ], "images/car-west-east.png" ],
 ]
 
-g = Game.new
+# run the came and add cars
+
+game = Game.instance
+game.map = map
 
 Thread.new do
   count = 0
 
   while true
-    g.add_car Car.new(*cars[count % cars.size])
+    game.add_car Car.new(*prototypes[count % prototypes.size])
 
     count += 1
 
@@ -85,5 +69,5 @@ Thread.new do
   end
 end
 
-g.run!
+game.run!
 

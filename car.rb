@@ -1,20 +1,21 @@
 
 class Car < GameObject
-  attr_accessor :velocity
-  attr_reader :crossroad
+  def initialize(position, velocity, image)
+    @space = Rinda::RingFinger.primary
 
-  def initialize(x, y, velocity, image, width, height)
     @velocity = velocity
-
-    @height = width
-    @width = height
 
     surface = Rubygame::Surface.load image
 
-    super(x, y, surface)
+    @width = surface.width
+    @height = surface.height
+
+    super(position, surface)
 
     Thread.new do
       while true
+        Thread.exit if hidden?
+
         update
 
         sleep 0.01
@@ -34,23 +35,25 @@ class Car < GameObject
   end
 
   def release_crossroad(new_x, new_y)
-    if @crossroad && CROSSROADS.detect_within(new_x, new_y, @width, @height) != @crossroad
-      SPACE.write [ :crossroad, @crossroad.to_s ]
+    if @crossroad && Game.instance.map.crossroads.detect_within(new_x, new_y, @width, @height) != @crossroad
+      @space.write [ :crossroad, @crossroad.to_s ]
 
       @crossroad = nil
     end
   end
 
   def take_crossroad(new_x, new_y)
-    crossroad = CROSSROADS.detect_within(new_x, new_y, @width, @height)
+    crossroad = Game.instance.map.crossroads.detect_within(new_x, new_y, @width, @height)
 
     if crossroad && @crossroad != crossroad
-      puts "taking: #{crossroad.to_s}"
-
-      SPACE.take [ :crossroad, crossroad.to_s ]
+      @space.take [ :crossroad, crossroad.to_s ]
 
       @crossroad = crossroad
     end
+  end
+
+  def hidden?
+    return @x < 0 || @x > Game.instance.map.width || @y < 0 || @y > Game.instance.map.height
   end
 end
 

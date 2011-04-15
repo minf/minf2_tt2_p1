@@ -14,11 +14,15 @@ class Crossroad
   end
 
   def to_s
-    return "(x=#{@x},y=#{@y},width=#{@width},height=#{@height})"
+    return "Crossroad(x=#{@x},y=#{@y},width=#{@width},height=#{@height})"
   end
 
   def ==(crossroad)
     return to_s == crossroad.to_s
+  end
+
+  def clone(x = @x, y = @y, width = @width, height = @height)
+    return Crossroad.new(x, y, width, height)
   end
 end
 

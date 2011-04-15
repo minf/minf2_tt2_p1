@@ -1,31 +1,37 @@
 
+require "singleton"
+
 class Game
-  attr_reader :cars
+  include Singleton
+
+  attr_reader :map
 
   def initialize
-    @screen = Rubygame::Screen.new [ 640, 480 ], 0, [ Rubygame::HWSURFACE, Rubygame::DOUBLEBUF ]
-
-    @screen.title = "The Fast and The Furious"
+    @sound = Rubygame::Music.load "sound/acceleration.ogg"
+    @sound.play :repeats => -1
 
     @queue = Rubygame::EventQueue.new
     @clock = Rubygame::Clock.new
     @clock.target_framerate = 60
 
-    @background = Background.new
-
     @cars = []
   end
 
+  def map=(map)
+    @map = map
+
+    @screen = Rubygame::Screen.new [ @map.width, @map.height ], 0, [ Rubygame::HWSURFACE, Rubygame::DOUBLEBUF ]
+    @screen.title = "Driving Home For Christmas"
+  end
+
   def add_car(car)
-    cars.push car
+    @cars.push car
   end
 
   def run!
     loop do
       update
-
       draw
-
       @clock.tick
     end
   end
@@ -42,13 +48,17 @@ class Game
   end
 
   def draw
-    @screen.fill [ 0, 0, 0 ]
+    @map.draw @screen if @map
 
-    @background.draw @screen
+    # draw cars
 
     @cars.each do |car| 
       car.draw @screen
     end
+
+    # remove hidden cars
+
+    @cars = @cars.select{ |car| !car.hidden? }
 
     @screen.flip
   end
