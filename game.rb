@@ -56,10 +56,6 @@ class Game
       car.draw @screen
     end
 
-    # remove hidden cars
-
-    @cars = @cars.select{ |car| !car.hidden? }
-
     @screen.flip
   end
 end

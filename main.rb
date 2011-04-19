@@ -58,12 +58,8 @@ game = Game.instance
 game.map = map
 
 Thread.new do
-  count = 0
-
-  while true
-    game.add_car Car.new(*prototypes[count % prototypes.size])
-
-    count += 1
+  16.times do |i|
+    game.add_car Car.new(*prototypes[i % prototypes.size])
 
     sleep 0.5
   end

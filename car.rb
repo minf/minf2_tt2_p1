@@ -16,8 +16,6 @@ class Car < GameObject
 
     Thread.new do
       while true
-        Thread.exit if hidden?
-
         update
 
         sleep 0.01
@@ -26,19 +24,23 @@ class Car < GameObject
   end
 
   def update
-    new_x = @x + @velocity[0]
-    new_y = @y + @velocity[1]
+    new_x = (@x + @velocity[0]) % Game.instance.map.width
+    new_y = (@y + @velocity[1]) % Game.instance.map.height
 
-    release_crossroad(new_x, new_y)
-    take_crossroad(new_x, new_y)
+    manage_crossroads(new_x, new_y)
 
     @x = new_x
     @y = new_y
   end
 
+  def manage_crossroads(new_x, new_y)
+    release_crossroad(new_x, new_y)
+    take_crossroad(new_x, new_y)
+  end
+
   def release_crossroad(new_x, new_y)
     if @crossroad && Game.instance.map.crossroads.detect_within(new_x, new_y, @width, @height) != @crossroad
-      @space.write [ :crossroad, @crossroad.to_s ]
+      @space.write [ :traffic, :crossroad, @crossroad.to_s ]
 
       @crossroad = nil
     end
@@ -48,14 +50,10 @@ class Car < GameObject
     crossroad = @map.crossroads.detect_within(new_x, new_y, @width, @height)
 
     if crossroad && @crossroad != crossroad
-      @space.take [ :crossroad, crossroad.to_s ]
+      @space.take [ :traffic, :crossroad, crossroad.to_s ]
 
       @crossroad = crossroad
     end
-  end
-
-  def hidden?
-    return @x < 0 || @x > @map.width || @y < 0 || @y > @map.height
   end
 end
 

@@ -12,7 +12,8 @@ class Crossroads < Array
 
   def add(*crossroads)
     crossroads.each do |crossroad|
-      @space.write [ :crossroad, crossroad.to_s ]
+      @space.write [ :traffic, :crossroad, crossroad.to_s ]
+      @space.write [ :map, :crossroad, crossroad.to_s ]
 
       push crossroad
     end
