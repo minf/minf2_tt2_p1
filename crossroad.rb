@@ -41,5 +41,11 @@ class Crossroad
   def self.all
     Rinda::RingFinger.primary.read_all([ :map, :crossroad, nil ]).collect{ |t| Marshal.load t[2] }
   end
+
+  def self.find_by_coordinates(x, y, width, height)
+    @@crossroads ||= all
+
+    @@crossroads.detect{ |crossroad| crossroad.on?(x, y, width, height) }
+  end
 end
 

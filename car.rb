@@ -1,8 +1,6 @@
 
 class Car < GameObject
   def initialize(position, velocity, image)
-    @crossroads = Crossroad.all
-
     @velocity = velocity
 
     surface = Rubygame::Surface.load image
@@ -34,13 +32,9 @@ class Car < GameObject
   def take_crossroad(x, y)
     @crossroad = @crossroad.release if @crossroad && !@crossroad.on?(x, y, @width, @height)
 
-    crossroad = find_crossroad(x, y)
+    crossroad = Crossroad.find_by_coordinates(x, y, @width, @height)
 
     @crossroad = crossroad.take if crossroad && @crossroad != crossroad
-  end
-
-  def find_crossroad(x, y)
-    @crossroads.find{ |crossroad| crossroad.on?(x, y, @width, @height) }
   end
 end
 
