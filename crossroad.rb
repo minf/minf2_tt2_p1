@@ -12,15 +12,15 @@ class Crossroad
   end
 
   def on?(x, y, width, height)
-    return (x >= @x || x + width >= @x) && x <= @x + @width && (y >= @y || y + height >= @y) && y <= @y + @height
+    (x >= @x || x + width >= @x) && x <= @x + @width && (y >= @y || y + height >= @y) && y <= @y + @height
   end
 
   def ==(crossroad)
-    return @x == crossroad.x && @y == crossroad.y && @width == crossroad.width && @height == crossroad.height
+    @x == crossroad.x && @y == crossroad.y && @width == crossroad.width && @height == crossroad.height
   end
 
   def clone(x = @x, y = @y, width = @width, height = @height)
-    return Crossroad.new(x, y, width, height)
+    Crossroad.new(x, y, width, height)
   end
 
   def release
