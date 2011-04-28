@@ -1,6 +1,6 @@
 
+require "trace"
 require "space"
-require "crossroads"
 require "crossroad"
 require "rubygems"
 require "rubygame"
@@ -13,12 +13,10 @@ require "car"
 
 prototype = Crossroad.new(0, 0, 35, 35) # all crossroads are of equal size
 
-map = Map.new
-
-map.crossroads.add prototype.clone(108, 64),  prototype.clone(236, 64),  prototype.clone(366, 64),  prototype.clone(496, 64),
-                   prototype.clone(108, 165), prototype.clone(236, 165), prototype.clone(366, 165), prototype.clone(496, 165),
-                   prototype.clone(108, 272), prototype.clone(236, 272), prototype.clone(366, 272), prototype.clone(496, 272),
-                   prototype.clone(108, 380), prototype.clone(236, 380), prototype.clone(366, 380), prototype.clone(496, 380)
+prototype.clone(108, 64).create;  prototype.clone(236, 64).create;  prototype.clone(366, 64).create;  prototype.clone(496, 64).create
+prototype.clone(108, 165).create; prototype.clone(236, 165).create; prototype.clone(366, 165).create; prototype.clone(496, 165).create
+prototype.clone(108, 272).create; prototype.clone(236, 272).create; prototype.clone(366, 272).create; prototype.clone(496, 272).create
+prototype.clone(108, 380).create; prototype.clone(236, 380).create; prototype.clone(366, 380).create; prototype.clone(496, 380).create
 
 # car prototype values
 
@@ -55,11 +53,11 @@ prototypes = [
 # run the came and add cars
 
 game = Game.instance
-game.map = map
+game.map = Map.new
 
 Thread.new do
   16.times do |i|
-    game.add_car Car.new(*prototypes[i % prototypes.size])
+    trace { game.add_car Car.new(*prototypes[i % prototypes.size]) }
 
     sleep 0.5
   end

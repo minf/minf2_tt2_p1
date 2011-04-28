@@ -30,20 +30,18 @@ class Game
 
   def run!
     loop do
-      update
-      draw
-      @clock.tick
-    end
-  end
+      @queue.each do |event|
+        case event
+          when Rubygame::QuitEvent
+            Rubygame.quit
 
-  def update
-    @queue.each do |event|
-      case event
-        when Rubygame::QuitEvent
-          Rubygame.quit
-
-          exit
+            exit
+        end
       end
+
+      draw
+
+      @clock.tick
     end
   end
 

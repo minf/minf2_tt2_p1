@@ -5,7 +5,7 @@ Written in Ruby using Rinda and Rubygame.
 TODO
 
 - a car should read the crossroads from the tuple space on initialization, tuple: [ :map, :crossroad, marshalled object ]
-- put map data into tuple space (width, height, ...) ?
+  DONE
 - fairness ?
 - add direction to crossroad
 
