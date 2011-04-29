@@ -30,11 +30,17 @@ class Car < GameObject
   end
 
   def take_crossroad(x, y)
-    @crossroad = @crossroad.release if @crossroad && !@crossroad.on?(x, y, @width, @height)
+    old_crossroad = @crossroad if @crossroad && !@crossroad.on?(x, y, @width, @height)
 
     crossroad = Crossroad.find_by_coordinates(x, y, @width, @height)
 
     @crossroad = crossroad.take if crossroad && @crossroad != crossroad
+
+    if old_crossroad
+      old_crossroad.release
+
+      @crossroad = nil if old_crossroad == @crossroad
+    end
   end
 end
 
