@@ -1,13 +1,14 @@
 
 require "trace"
 require "space"
-require "crossroad"
 require "rubygems"
 require "rubygame"
 require "game"
 require "game_object"
 require "map"
 require "car"
+require "empty_car"
+require "crossroad"
 
 # add the crossroads
 

@@ -5,6 +5,7 @@ class Game
   include Singleton
 
   attr_reader :map
+  attr_accessor :crossroads
 
   def initialize
     @sound = Rubygame::Music.load "sound/acceleration.ogg"
@@ -15,6 +16,7 @@ class Game
     @clock.target_framerate = 60
 
     @cars = []
+    @crossroads = []
   end
 
   def map=(map)
@@ -52,6 +54,10 @@ class Game
 
     @cars.each do |car| 
       car.draw @screen
+    end
+
+    @crossroads.each do |crossroad|
+      crossroad.draw @screen
     end
 
     @screen.flip

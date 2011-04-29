@@ -1,5 +1,5 @@
 
-class Crossroad
+class Crossroad < GameObject
   attr_reader :x, :y, :width, :height
 
   def initialize(x, y, width, height)
@@ -9,6 +9,12 @@ class Crossroad
     @y = y
     @width = width
     @height = height
+
+    super [x, y]
+  end
+
+  def draw(screen)
+    Rubygame::Surface.load("images/crossroad.png").blit screen, [ @x, @y ]
   end
 
   def on?(x, y, width, height)
@@ -23,19 +29,24 @@ class Crossroad
     Crossroad.new(x, y, width, height)
   end
 
-  def release
-    @space.write [ :traffic, :crossroad, Marshal.dump(self) ]
+  def release_by(car)
+    @space.take [ :traffic, :crossroad, Marshal.dump(self), Marshal.dump(car.object_id) ]
+    @space.write [ :traffic, :crossroad, Marshal.dump(self), Marshal.dump(EmptyCar.new) ]
 
     nil
   end
 
-  def take
-    Marshal.load @space.take([ :traffic, :crossroad, Marshal.dump(self) ])[2]
+  def take_by(car)
+    res = Marshal.load @space.take([ :traffic, :crossroad, Marshal.dump(self), Marshal.dump(EmptyCar.new) ])[2]
+
+    @space.write [ :traffic, :crossroad, Marshal.dump(self), Marshal.dump(car.object_id) ]
+
+    res
   end
 
   def create
     @space.write [ :map, :crossroad, Marshal.dump(self) ]
-    @space.write [ :traffic, :crossroad, Marshal.dump(self) ]
+    @space.write [ :traffic, :crossroad, Marshal.dump(self), Marshal.dump(EmptyCar.new) ]
   end
 
   def self.all

@@ -3,12 +3,14 @@ class Car < GameObject
   def initialize(position, velocity, image)
     @velocity = velocity
 
-    surface = Rubygame::Surface.load image
+    @image = image
+
+    surface = Rubygame::Surface.load @image
 
     @width = surface.width
     @height = surface.height
 
-    super(position, surface)
+    super position
 
     Thread.new do
       loop do
@@ -17,6 +19,10 @@ class Car < GameObject
         sleep 0.01
       end
     end
+  end
+
+  def draw(screen)
+    Rubygame::Surface.load(@image).blit screen, [ @x, @y ]
   end
 
   def drive
@@ -34,10 +40,10 @@ class Car < GameObject
 
     crossroad = Crossroad.find_by_coordinates(x, y, @width, @height)
 
-    @crossroad = crossroad.take if crossroad && @crossroad != crossroad
+    @crossroad = crossroad.take_by(self) if crossroad && @crossroad != crossroad
 
     if old_crossroad
-      old_crossroad.release
+      old_crossroad.release_by self
 
       @crossroad = nil if old_crossroad == @crossroad
     end
