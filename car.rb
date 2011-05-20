@@ -21,6 +21,14 @@ class Car < GameObject
     end
   end
 
+  def horizontal?
+    return @velocity[0] != 0 && @velocity[1] == 0
+  end
+
+  def vertical?
+    return @velocity[1] != 0 && @velocity[0] == 0
+  end
+
   def draw(screen)
     Rubygame::Surface.load(@image).blit screen, [ @x, @y ]
   end

@@ -9,6 +9,7 @@ require "map"
 require "car"
 require "empty_car"
 require "crossroad"
+require "traffic_crossroad"
 
 # add the crossroads
 
