@@ -8,6 +8,7 @@ require "game_object"
 require "map"
 require "car"
 require "empty_car"
+require "direction"
 require "crossroad"
 require "traffic_crossroad"
 

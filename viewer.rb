@@ -6,6 +6,7 @@ require "rubygame"
 require "game"
 require "game_object"
 require "map"
+require "direction"
 require "crossroad"
 require "empty_car"
 require "traffic_crossroad"
@@ -27,14 +28,12 @@ Thread.new do
 
     notifier.each do |_,t|
       crossroad = Marshal.load t[2]
-      horizontal_cars = t[3]
-      vertical_cars = t[4]
 
       traffic_crossroad = game.traffic_crossroads.detect{ |tc| tc.crossroad == crossroad }
 
       if traffic_crossroad
-        traffic_crossroad.horizontal_cars = horizontal_cars
-        traffic_crossroad.vertical_cars = vertical_cars
+        traffic_crossroad.direction_horizontal = Marshal.load t[3]
+        traffic_crossroad.direction_vertical = Marshal.load t[4]
       end
     end
   end

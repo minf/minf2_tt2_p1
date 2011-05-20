@@ -1,20 +1,22 @@
 
 class TrafficCrossroad < GameObject
   attr_reader :crossroad
-  attr_accessor :horizontal_cars, :vertical_cars
+  attr_accessor :direction_horizontal, :direction_vertical
 
-  def initialize(crossroad, horizontal_cars = 0, vertical_cars = 0)
+  def initialize(crossroad, direction_horizontal = Direction.empty, direction_vertical = Direction.empty)
     @crossroad = crossroad
-    @horizontal_cars = horizontal_cars
-    @vertical_cars = vertical_cars
+    @direction_horizontal = direction_horizontal
+    @direction_vertical = direction_vertical
 
     super [ crossroad.x, crossroad.y ]
   end
 
   def draw(screen)
-    if @horizontal_cars > 0
+    unless @direction_horizontal.blank?
       Rubygame::Surface.load("images/crossroad-horizontal.png").blit screen, [ @x, @y ]
-    elsif @vertical_cars > 0
+    end
+
+    unless @direction_vertical.blank?
       Rubygame::Surface.load("images/crossroad-vertical.png").blit screen, [ @x, @y ]
     end
   end
